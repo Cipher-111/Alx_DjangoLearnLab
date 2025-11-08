@@ -1,7 +1,9 @@
 # relationship_app/views.py
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.detail import DetailView
@@ -38,7 +40,7 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 
-# Login and Logout are handled via Django's built-in views in urls.py
+# Login & Logout handled by Django's built-in views in urls.py
 
 # -----------------------------
 # Role-Based Views
