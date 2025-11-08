@@ -13,6 +13,7 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
+    # ✅ Nested Meta class with custom permissions
     class Meta:
         permissions = [
             ("can_add_book", "Can add book"),
