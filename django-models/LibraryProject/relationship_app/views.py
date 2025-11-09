@@ -1,8 +1,8 @@
 # relationship_app/views.py
 
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.detail import DetailView
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from .models import Book, Library, UserProfile
@@ -12,13 +12,13 @@ def list_books(request):
     books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})
 
-# Class-Based View: Show library details
+# Class-Based View: Library detail
 class LibraryDetailView(DetailView):
     model = Library
     template_name = "relationship_app/library_detail.html"
     context_object_name = "library"
 
-# Authentication Views
+# User registration view
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -30,7 +30,7 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 
-# Role-Based Views
+# Role-based access helpers
 def check_role(user, role_name):
     return hasattr(user, 'userprofile') and user.userprofile.role == role_name
 
@@ -46,18 +46,18 @@ def librarian_view(request):
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
 
-# Book Views with Permissions
+# Secured Book Views
 @permission_required('relationship_app.can_add_book', raise_exception=True)
 def add_book(request):
-    # Your logic to add a book
+    # Placeholder for adding a book
     pass
 
 @permission_required('relationship_app.can_change_book', raise_exception=True)
 def edit_book(request, book_id):
-    # Your logic to edit a book
+    # Placeholder for editing a book
     pass
 
 @permission_required('relationship_app.can_delete_book', raise_exception=True)
 def delete_book(request, book_id):
-    # Your logic to delete a book
+    # Placeholder for deleting a book
     pass
