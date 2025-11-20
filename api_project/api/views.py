@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 # Create your views here.
 #Setting up a view that uses the serializer to retrieve and return book data.
-class BookListAPIView(generics.ListAPIView):
+class BookList(generics.ListAPIView):
     #implementing authentication
     authentication_classes = [TokenAuthentication]
     #ensuring only authenticated users can access the data from this view
