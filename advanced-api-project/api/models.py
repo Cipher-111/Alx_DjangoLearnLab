@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 #Creating my models
 
-#Model Author
+#Model Author created
 class Author(models.Model):
     name = models.CharField(max_length = 50, blank = False, unique = True)
 
