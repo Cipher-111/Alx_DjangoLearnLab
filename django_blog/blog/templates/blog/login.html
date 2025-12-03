@@ -1,5 +1,4 @@
 {% extends "blog/base.html" %}
-{% load static %}
 
 {% block title %}Login{% endblock %}
 
@@ -8,12 +7,8 @@
 
 <form method="POST">
     {% csrf_token %}
-    <label>Username</label>
-    <input type="text" name="username" required><br><br>
-
-    <label>Password</label>
-    <input type="password" name="password" required><br><br>
-
+    <p><label>Username:</label><br><input type="text" name="username" required></p>
+    <p><label>Password:</label><br><input type="password" name="password" required></p>
     <button type="submit">Login</button>
 </form>
 
