@@ -14,6 +14,7 @@ from django.urls import reverse_lazy
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 
+# FEW CODE WRITTEN BY OPENAI
 
 # ---------------------------
 # AUTHENTICATION
