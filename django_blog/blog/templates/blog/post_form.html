@@ -1,15 +1,11 @@
-{% extends "blog/base.html" %}
-
-{% block title %}{% if view.object %}Edit Post{% else %}Create New Post{% endif %}{% endblock %}
+{% extends "base.html" %}
+{% block title %}{{ view.title }}{% endblock %}
 
 {% block content %}
-<h2>{% if view.object %}Edit Post{% else %}Create New Post{% endif %}</h2>
-
-<form method="POST">
+<h2>{{ view.title }}</h2>
+<form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save</button>
+    <button type="submit">{{ view.button_text }}</button>
 </form>
-
-<p><a href="{% url 'posts' %}">← Back to all posts</a></p>
 {% endblock %}

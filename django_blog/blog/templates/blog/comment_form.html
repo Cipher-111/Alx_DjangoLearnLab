@@ -1,13 +1,11 @@
-{% extends "blog/base.html" %}
+{% extends "base.html" %}
+{% block title %}Comment{% endblock %}
 
 {% block content %}
-<h2>{% if view.object %}Edit Comment{% else %}Add Comment{% endif %}</h2>
-
-<form method="POST">
+<h2>{{ view.title }}</h2>
+<form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save</button>
+    <button type="submit">{{ view.button_text }}</button>
 </form>
-
-<a href="{{ view.object.post.get_absolute_url|default:'/' }}">Back</a>
 {% endblock %}
