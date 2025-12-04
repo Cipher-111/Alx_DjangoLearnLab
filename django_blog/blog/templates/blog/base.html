@@ -11,8 +11,9 @@
 <header>
     <nav>
         <ul>
+            <!-- Homepage/Post List -->
             <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'posts' %}">Blog Posts</a></li>
+            <li><a href="{% url 'home' %}">Blog Posts</a></li>
 
             {% if user.is_authenticated %}
                 <li><a href="{% url 'profile' %}">Profile</a></li>
@@ -26,7 +27,8 @@
 </header>
 
 <div class="content">
-    {% block content %}{% endblock %}
+    {% block content %}
+    {% endblock %}
 </div>
 
 <footer>
