@@ -10,22 +10,22 @@ from django.views.generic import (
 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+from django.db.models import Q
 
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 
-# FEW CODE WRITTEN BY OPENAI
 
-# ---------------------------
+# --------------------------------------------------------------------
 # AUTHENTICATION
-# ---------------------------
+# --------------------------------------------------------------------
 
 def register_view(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Registration successful! You can log in now.")
+            messages.success(request, "Registration successful! You can now log in.")
             return redirect("login")
     else:
         form = UserCreationForm()
@@ -39,7 +39,7 @@ def login_view(request):
             login(request, form.get_user())
             return redirect("home")
         else:
-            messages.error(request, "Invalid login credentials")
+            messages.error(request, "Invalid credentials")
     else:
         form = AuthenticationForm()
     return render(request, "blog/login.html", {"form": form})
@@ -55,9 +55,9 @@ def profile_view(request):
     return render(request, "blog/profile.html")
 
 
-# ---------------------------
+# --------------------------------------------------------------------
 # POST CRUD
-# ---------------------------
+# --------------------------------------------------------------------
 
 class PostListView(ListView):
     model = Post
@@ -99,23 +99,25 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.get_object().author == self.request.user
 
 
-# ---------------------------
+# --------------------------------------------------------------------
 # COMMENT CRUD
-# ---------------------------
+# --------------------------------------------------------------------
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm
-    template_name = "comment_form.html"
+    template_name = "blog/comment_form.html"
 
+    # FIXED — use post_id (your URL)
     def form_valid(self, form):
-        post = get_object_or_404(Post, pk=self.kwargs["pk"])
+        post = get_object_or_404(Post, pk=self.kwargs["post_id"])
         form.instance.post = post
         form.instance.author = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
         return self.object.post.get_absolute_url()
+
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
@@ -138,3 +140,24 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return self.object.post.get_absolute_url()
+
+
+# --------------------------------------------------------------------
+# SEARCH FUNCTIONALITY  ✔ REQUIRED BY ALX
+# --------------------------------------------------------------------
+
+def search_posts(request):
+    query = request.GET.get("q")
+    results = []
+
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+
+    return render(request, "blog/search_results.html", {
+        "query": query,
+        "results": results
+    })

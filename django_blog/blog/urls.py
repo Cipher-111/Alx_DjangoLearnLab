@@ -1,7 +1,11 @@
 from django.urls import path
-from .views import register_view, login_view, logout_view, profile_view
-from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView
-from .views import CommentCreateView, CommentUpdateView, CommentDeleteView
+from .views import (
+    PostListView, PostDetailView, PostCreateView,
+    PostUpdateView, PostDeleteView,
+    CommentCreateView, CommentUpdateView, CommentDeleteView,
+    register_view, login_view, logout_view, profile_view,
+    search_posts
+)
 
 urlpatterns = [
     # Authentication
@@ -10,20 +14,19 @@ urlpatterns = [
     path("logout/", logout_view, name="logout"),
     path("profile/", profile_view, name="profile"),
 
-    # Post CRUD
+    # Posts
     path("", PostListView.as_view(), name="home"),
     path("posts/", PostListView.as_view(), name="posts"),
-    path("post/new/", PostCreateView.as_view(), name="post_new"),
     path("post/<int:pk>/", PostDetailView.as_view(), name="post-detail"),
-    path("post/<int:pk>/update/", PostUpdateView.as_view(), name="post_update"),
-    path("post/<int:pk>/delete/", PostDeleteView.as_view(), name="post_delete"),
+    path("post/new/", PostCreateView.as_view(), name="post-create"),
+    path("post/<int:pk>/update/", PostUpdateView.as_view(), name="post-update"),
+    path("post/<int:pk>/delete/", PostDeleteView.as_view(), name="post-delete"),
 
-    # Comment URLs
-    path("post/<int:pk>/comments/new/", CommentCreateView.as_view(), name="comment_create"),
-    path("comment/<int:pk>/update/", CommentUpdateView.as_view(), name="comment_update"),
-    path("comment/<int:pk>/delete/", CommentDeleteView.as_view(), name="comment_delete"),
+    # Comments
+    path("post/<int:post_id>/comments/new/", CommentCreateView.as_view(), name="comment-create"),
+    path("comment/<int:pk>/edit/", CommentUpdateView.as_view(), name="comment-update"),
+    path("comment/<int:pk>/delete/", CommentDeleteView.as_view(), name="comment-delete"),
 
-    # Tag & Search URLs
-    path("tags/<str:tag_name>/", TagListView.as_view(), name="posts_by_tag"),
-    path("search/", PostSearchView.as_view(), name="post_search"),
+    # Search
+    path("search/", search_posts, name="search"),
 ]
