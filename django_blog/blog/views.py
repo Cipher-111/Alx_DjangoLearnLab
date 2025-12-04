@@ -98,6 +98,14 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         return self.get_object().author == self.request.user
 
+class PostByTagListView(ListView):
+    model = Post
+    template_name = "blog/post_list.html"
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        tag = self.kwargs.get("tag_slug")
+        return Post.objects.filter(tags__name__iexact=tag)
 
 # --------------------------------------------------------------------
 # COMMENT CRUD
