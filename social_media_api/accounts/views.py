@@ -3,10 +3,10 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from .models import User
 from .serializers import UserSerializer, LoginSerializer
-
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -17,7 +17,6 @@ class RegisterView(generics.CreateAPIView):
         user = User.objects.get(username=response.data['username'])
         token = Token.objects.get(user=user)
         return Response({'token': token.key, 'user': response.data})
-
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
@@ -30,3 +29,15 @@ class LoginView(generics.GenericAPIView):
         token, created = Token.objects.get_or_create(user=user)
 
         return Response({'token': token.key})
+
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "bio": user.bio,
+            "profile_picture": None if not user.profile_picture else user.profile_picture.url
+        })
