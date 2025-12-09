@@ -1,43 +1,85 @@
-from rest_framework import generics
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model, authenticate
+from .serializers import UserSerializer, RegisterSerializer
 
-from .models import User
-from .serializers import UserSerializer, LoginSerializer
+User = get_user_model()
 
+# User Registration
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]
 
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        user = User.objects.get(username=response.data['username'])
-        token = Token.objects.get(user=user)
-        return Response({'token': token.key, 'user': response.data})
-
-class LoginView(generics.GenericAPIView):
-    serializer_class = LoginSerializer
-
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        user = serializer.validated_data
+        user = serializer.save()
         token, created = Token.objects.get_or_create(user=user)
-
-        return Response({'token': token.key})
-
-class ProfileView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        user = request.user
         return Response({
-            "id": user.id,
-            "username": user.username,
-            "bio": user.bio,
-            "profile_picture": None if not user.profile_picture else user.profile_picture.url
-        })
+            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "token": token.key
+        }, status=status.HTTP_201_CREATED)
+
+# User Login
+class LoginView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = authenticate(username=username, password=password)
+        if user:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({"token": token.key})
+        return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+# Profile view
+class ProfileView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+# Follow a user
+class FollowUserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, username):
+        try:
+            user_to_follow = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if user_to_follow == request.user:
+            return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.following.add(user_to_follow)
+        return Response({"detail": f"You are now following {username}."}, status=status.HTTP_200_OK)
+
+# Unfollow a user
+class UnfollowUserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, username):
+        try:
+            user_to_unfollow = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if user_to_unfollow == request.user:
+            return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.following.remove(user_to_unfollow)
+        return Response({"detail": f"You have unfollowed {username}."}, status=status.HTTP_200_OK)
+
+# List of users the current user is following
+class FollowingListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return self.request.user.following.all()
