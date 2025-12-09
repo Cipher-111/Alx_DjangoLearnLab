@@ -1,257 +1,114 @@
+--------------------
 API Documentation
+--------------------
 Authentication Endpoints
+
 1. Register User
 
-POST /api/accounts/register/
+Endpoint: POST /api/accounts/register/
 
-Request
-
-{
-  "username": "john",
-  "password": "123456",
-  "bio": "Hello world"
-}
-
-
-Response
-
-{
-  "token": "generated_token_here",
-  "user": {
-    "id": 1,
-    "username": "john",
-    "bio": "Hello world",
-    "profile_picture": null
-  }
-}
+Description: Creates a new user account. Returns an authentication token and user details.
 
 2. Login
 
-POST /api/accounts/login/
+Endpoint: POST /api/accounts/login/
 
-Request
-
-{
-  "username": "john",
-  "password": "123456"
-}
-
-
-Response
-
-{
-  "token": "generated_token_here"
-}
+Description: Authenticates an existing user. Returns an authentication token.
 
 3. User Profile
 
-GET /api/accounts/profile/
+Endpoint: GET /api/accounts/profile/
 
-Headers
-
-Authorization: Token your_token_here
-
-
-Response
-
-{
-  "id": 1,
-  "username": "john",
-  "bio": "Hello world",
-  "profile_picture": null
-}
+Description: Retrieves the current user's profile information. Requires authentication.
 
 Post Endpoints
+
 1. List Posts
 
-GET /api/posts/
+Endpoint: GET /api/posts/
 
-Example:
-
-/api/posts/?page=1
-/api/posts/?search=hello
-
-
-Response
-
-{
-  "count": 1,
-  "next": null,
-  "previous": null,
-  "results": [
-    {
-      "id": 1,
-      "author": "john",
-      "title": "My First Post",
-      "content": "This is the content",
-      "created_at": "2025-12-08T12:00:00Z",
-      "updated_at": "2025-12-08T12:00:00Z"
-    }
-  ]
-}
+Description: Lists all posts. Supports pagination and search filters (by title/content).
 
 2. Create Post
 
-POST /api/posts/
+Endpoint: POST /api/posts/
 
-Headers
-
-Authorization: Token your_token_here
-
-
-Request
-
-{
-  "title": "My Post",
-  "content": "This is a new post"
-}
-
-
-Response
-
-{
-  "id": 1,
-  "author": "john",
-  "title": "My Post",
-  "content": "This is a new post",
-  "created_at": "2025-12-08T12:00:00Z",
-  "updated_at": "2025-12-08T12:00:00Z"
-}
+Description: Creates a new post. Requires authentication.
 
 3. Retrieve Single Post
 
-GET /api/posts/1/
+Endpoint: GET /api/posts/<post_id>/
 
-Response
-
-{
-  "id": 1,
-  "author": "john",
-  "title": "My Post",
-  "content": "This is a new post",
-  "created_at": "2025-12-08T12:00:00Z",
-  "updated_at": "2025-12-08T12:00:00Z"
-}
+Description: Retrieves details of a single post by ID.
 
 4. Update Post
 
-PUT/PATCH /api/posts/1/
+Endpoint: PUT/PATCH /api/posts/<post_id>/
 
-Headers
-
-Authorization: Token your_token_here
-
-
-Request
-
-{
-  "title": "Updated Title",
-  "content": "Updated content"
-}
-
-
-Response
-
-{
-  "id": 1,
-  "author": "john",
-  "title": "Updated Title",
-  "content": "Updated content",
-  "created_at": "2025-12-08T12:00:00Z",
-  "updated_at": "2025-12-08T13:00:00Z"
-}
+Description: Updates a post. Only the author can update. Requires authentication.
 
 5. Delete Post
 
-DELETE /api/posts/1/
+Endpoint: DELETE /api/posts/<post_id>/
 
-Headers
-
-Authorization: Token your_token_here
-
-
-Response
-
-{
-  "detail": "Post deleted successfully"
-}
+Description: Deletes a post. Only the author can delete. Requires authentication.
 
 Comment Endpoints
+
 1. List Comments
 
-GET /api/comments/
+Endpoint: GET /api/comments/
 
-Response
-
-[
-  {
-    "id": 1,
-    "post": 1,
-    "author": "john",
-    "content": "Nice post!",
-    "created_at": "2025-12-08T12:30:00Z",
-    "updated_at": "2025-12-08T12:30:00Z"
-  }
-]
+Description: Lists all comments.
 
 2. Create Comment
 
-POST /api/comments/
+Endpoint: POST /api/comments/
 
-Headers
-
-Authorization: Token your_token_here
-
-
-Request
-
-{
-  "post": 1,
-  "content": "This is a comment"
-}
-
-
-Response
-
-{
-  "id": 2,
-  "post": 1,
-  "author": "john",
-  "content": "This is a comment",
-  "created_at": "2025-12-08T12:40:00Z",
-  "updated_at": "2025-12-08T12:40:00Z"
-}
+Description: Creates a new comment on a post. Requires authentication.
 
 3. Retrieve Single Comment
 
-GET /api/comments/1/
+Endpoint: GET /api/comments/<comment_id>/
+
+Description: Retrieves details of a single comment by ID.
 
 4. Update Comment
 
-PUT/PATCH /api/comments/1/
+Endpoint: PUT/PATCH /api/comments/<comment_id>/
 
-Headers
-
-Authorization: Token your_token_here
-
-
-Request
-
-{
-  "content": "Updated comment"
-}
+Description: Updates a comment. Only the author can update. Requires authentication.
 
 5. Delete Comment
 
-DELETE /api/comments/1/
+Endpoint: DELETE /api/comments/<comment_id>/
 
-Headers
-
-Authorization: Token your_token_here
+Description: Deletes a comment. Only the author can delete. Requires authentication.
 
 
-Response
+---------------------------
+Follow and Feed Endpoints
+---------------------------
+Follow a User
 
-{
-  "detail": "Comment deleted successfully"
-}
+Endpoint: /api/accounts/follow/<user_id>/
+
+Description: Allows a user to follow another user by their ID. Requires authentication. Updates the following relationship between users.
+
+Unfollow a User
+
+Endpoint: /api/accounts/unfollow/<user_id>/
+
+Description: Allows a user to unfollow another user by their ID. Requires authentication. Updates the following relationship between users.
+
+View Feed
+
+Endpoint: /api/posts/feed/
+
+Description: Retrieves posts from users that the current user follows. Posts are sorted by creation date, with the most recent posts first. Requires authentication.
+
+User Model Changes
+
+Field Added: following
+
+Description: A many-to-many relationship representing users that a given user follows. Supports tracking followers and followees.
