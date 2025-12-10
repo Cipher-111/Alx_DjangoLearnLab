@@ -73,3 +73,10 @@ class UnfollowUserView(generics.GenericAPIView):
             {"detail": f"You have unfollowed {user_to_unfollow.username}"},
             status=status.HTTP_200_OK
         )
+
+Notification.objects.create(
+    recipient=target_user,
+    actor=request.user,
+    verb="started following you",
+)
+
