@@ -112,3 +112,60 @@ User Model Changes
 Field Added: following
 
 Description: A many-to-many relationship representing users that a given user follows. Supports tracking followers and followees.
+
+--------------------------------------------------------
+               SOCIAL MEDIA API DOCUMENTATION
+-------------------------------------------------------
+Authentication Endpoints
+
+  Register User: Create a new user account.
+
+  Login: Authenticate an existing user.
+
+  User Profile: Retrieve information about the current user.
+
+Follow Endpoints
+
+  Follow User: Follow another user.
+
+  Unfollow User: Unfollow a user.
+
+Feed Endpoint
+
+  Retrieve Feed: View posts from users the current user follows, ordered by creation date (most recent first).
+
+Post Endpoints
+
+  List Posts: View all posts with optional pagination and search.
+
+  Create Post: Add a new post.
+
+  Retrieve Post: View details of a specific post.
+
+  Update Post: Edit an existing post.
+
+  Delete Post: Remove a post.
+
+Comment Endpoints
+
+  List Comments: View all comments.
+
+  Create Comment: Add a comment to a post.
+
+  Retrieve Comment: View details of a specific comment.
+
+  Update Comment: Edit a comment.
+
+  Delete Comment: Remove a comment.
+
+Likes Endpoints
+
+  Like a Post: Like a specific post.
+
+  Unlike a Post: Remove a like from a post.
+
+Notifications Endpoints
+
+  Retrieve Notifications: Get all notifications for the current user.
+
+  Mark Notification as Read: Mark a notification as read.
