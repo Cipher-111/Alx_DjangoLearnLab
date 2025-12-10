@@ -169,3 +169,35 @@ Notifications Endpoints
   Retrieve Notifications: Get all notifications for the current user.
 
   Mark Notification as Read: Mark a notification as read.
+
+
+--------------------------------
+Documentation and Final Testing
+--------------------------------
+
+
+1️ Document the Deployment Process
+
+  Keep a deployment guide in your repository (DEPLOYMENT.md) that includes:
+
+  Required environment variables (e.g., DJANGO_SECRET_KEY, DATABASE_URL)
+
+  Steps to push code to production
+
+  Commands for migrations and collecting static files
+
+  Any server or hosting-specific configurations (e.g., Heroku, AWS, Nginx, Gunicorn)
+
+  Include requirements for new developers: Python version, database, and installed packages.
+
+2️ Document Application Configurations
+
+  Record settings differences between development and production:
+
+  DEBUG=False in production
+
+  Allowed hosts configured correctly
+
+  Static files and media handling (e.g., WhiteNoise or S3)
+
+  Database connection URLs or credentials
