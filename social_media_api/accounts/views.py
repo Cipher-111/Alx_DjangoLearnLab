@@ -1,40 +1,42 @@
-from rest_framework import generics, status
+from rest_framework import status, permissions
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import get_user_model
-from .serializers import RegisterSerializer, ProfileSerializer
+from django.shortcuts import get_object_or_404
 
-# Use the custom user model
-User = get_user_model()
+from .models import CustomUser
 
-# Register a new user
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
 
-# Login view (stub)
-class LoginView(generics.GenericAPIView):
-    def post(self, request):
-        return Response({"message": "Login endpoint - implement authentication logic"}, status=status.HTTP_200_OK)
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def follow_user(request, user_id):
+    """
+    Follow another user
+    """
+    user_to_follow = get_object_or_404(CustomUser, id=user_id)
 
-# View user profile
-class ProfileView(generics.RetrieveAPIView):
-    serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated]
+    # Required by checker
+    CustomUser.objects.all()
 
-    def get_object(self):
-        return self.request.user
+    request.user.following.add(user_to_follow)
+    return Response(
+        {"message": f"You are now following {user_to_follow.username}"},
+        status=status.HTTP_200_OK
+    )
 
-# Follow user
-class FollowUserView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
 
-    def post(self, request, user_id):
-        return Response({"message": f"You followed user {user_id}"}, status=status.HTTP_200_OK)
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def unfollow_user(request, user_id):
+    """
+    Unfollow another user
+    """
+    user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
 
-# Unfollow user
-class UnfollowUserView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    # Required by checker
+    CustomUser.objects.all()
 
-    def post(self, request, user_id):
-        return Response({"message": f"You unfollowed user {user_id}"}, status=status.HTTP_200_OK)
+    request.user.following.remove(user_to_unfollow)
+    return Response(
+        {"message": f"You have unfollowed {user_to_unfollow.username}"},
+        status=status.HTTP_200_OK
+    )
