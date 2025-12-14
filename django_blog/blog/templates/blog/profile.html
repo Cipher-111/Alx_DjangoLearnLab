@@ -1,21 +1,14 @@
-{% extends "blog/base.html" %}
-
-{% block title %}Your Profile{% endblock %}
-
-{% block content %}
-<h2>Your Profile</h2>
-
-<p><strong>Username:</strong> {{ request.user.username }}</p>
-
-<form method="POST">
-    {% csrf_token %}
-    <label>Email:</label><br>
-    <input type="email" name="email" value="{{ request.user.email }}">
-    <br><br>
-    <button type="submit">Update Profile</button>
-</form>
-
-{% for message in messages %}
-<p style="color:green;">{{ message }}</p>
-{% endfor %}
-{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+</head>
+<body>
+    <h2>Your Profile</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update Profile</button>
+    </form>
+</body>
+</html>
