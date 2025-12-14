@@ -1,15 +1,15 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-    date_of_birth = models.DateField(null=True, blank=True)
-    profile_photo = models.ImageField(upload_to="profile_photos/", null=True, blank=True)
+    bio = models.TextField(blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
 
-    following = models.ManyToManyField(
+    followers = models.ManyToManyField(
         "self",
         symmetrical=False,
-        related_name="followers",
+        related_name="following",
         blank=True
     )
 
